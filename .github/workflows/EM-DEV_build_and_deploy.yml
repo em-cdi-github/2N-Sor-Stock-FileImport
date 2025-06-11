@@ -1,0 +1,71 @@
+on:
+  # for automatic deployment process after push to main uncomment these lines
+  #push:
+  #  branches:
+  #    - main
+
+  # Allows you to run this workflow manually from Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python packages
+        run: pip install -r requirements.txt
+
+      # SnowCLI might support using env vars only in future but for now, we need to handle it as follows:
+      - name: Configure SnowCLI
+        env: 
+          SNOWFLAKE_CONNECTIONS_ACCOUNT:    ${{ secrets.EM_DEV_SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_CONNECTIONS_USER:       ${{ secrets.EM_DEV_SNOWFLAKE_USER }}
+          SNOWFLAKE_CONNECTIONS_WAREHOUSE:  ${{ secrets.EM_DEV_SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_CONNECTIONS_ROLE:       ${{ secrets.EM_DEV_SNOWFLAKE_ROLE }}
+          SNOWFLAKE_CONNECTIONS_DATABASE:   ${{ secrets.EM_DEV_SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_CONNECTIONS_SCHEMA:     ${{ secrets.EM_DEV_SNOWFLAKE_SCHEMA }}
+          SNOWFLAKE_PRIVATE_KEY_PATH:       ${{ secrets.EM_DEV_SNOWFLAKE_PRIVATE_KEY_PATH }}
+          SNOWFLAKE_PRIVATE_KEY:            ${{ secrets.EM_DEV_SNOWFLAKE_PRIVATE_KEY }}
+          PRIVATE_KEY_PASSPHRASE:           ${{ secrets.EM_DEV_PRIVATE_KEY_PASSPHRASE }}
+        run: |
+          cd $GITHUB_WORKSPACE
+          echo "default_connection_name = \"snowflake_con\"" >> config.toml
+          echo "[connections]" >> config.toml
+          echo "[connections.snowflake_con]" >> config.toml
+          echo "account = \"$SNOWFLAKE_CONNECTIONS_ACCOUNT\"" >> config.toml
+          echo "user = \"$SNOWFLAKE_CONNECTIONS_USER\"" >> config.toml
+          echo "authenticator = \"SNOWFLAKE_JWT\"" >> config.toml
+          echo "private_key_path = \"$SNOWFLAKE_PRIVATE_KEY_PATH\"" >> config.toml
+          echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_WAREHOUSE\"" >> config.toml
+          echo "role = \"$SNOWFLAKE_CONNECTIONS_ROLE\"" >> config.toml
+          echo "database = \"$SNOWFLAKE_CONNECTIONS_DATABASE\"" >> config.toml
+          echo "schema = \"$SNOWFLAKE_CONNECTIONS_SCHEMA\"" >> config.toml
+          cat config.toml
+          echo "$SNOWFLAKE_PRIVATE_KEY" >> rsa_key.p8
+          cat rsa_key.p8
+
+      - name: Deploy objects
+        env:
+          SNOWFLAKE_CONNECTIONS_ACCOUNT:    ${{ secrets.EM_DEV_SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_CONNECTIONS_USER:       ${{ secrets.EM_DEV_SNOWFLAKE_USER }}
+          SNOWFLAKE_CONNECTIONS_ROLE:       ${{ secrets.EM_DEV_SNOWFLAKE_ROLE }}
+          SNOWFLAKE_CONNECTIONS_WAREHOUSE:  ${{ secrets.EM_DEV_SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_CONNECTIONS_DATABASE:   ${{ secrets.EM_DEV_SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_CONNECTIONS_SCHEMA:     ${{ secrets.EM_DEV_SNOWFLAKE_SCHEMA }}
+          SNOWFLAKE_PRIVATE_KEY_PATH:       ${{ secrets.EM_DEV_SNOWFLAKE_PRIVATE_KEY_PATH }}
+          SNOWFLAKE_PRIVATE_KEY:            ${{ secrets.EM_DEV_SNOWFLAKE_PRIVATE_KEY }} 
+          PRIVATE_KEY_PASSPHRASE:           ${{ secrets.EM_DEV_PRIVATE_KEY_PASSPHRASE }}
+        run: |
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY _2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV FETCH"
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @_2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV/branches/${{ github.ref_name }}/templates/schema__create.sql USING (database_name=>'GOVERNANCE_DB_DEV', schema_name=>'INTEGRATION')"
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @_2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV/branches/${{ github.ref_name }}/snowflake/databases/governance_db/schemas/integration/stages/git_internal_repo.sql USING (git_branch=>'${{ github.ref_name }}' ,environment=>'DEV',project=>'_2N_SOR_AND_STOCK')"
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @GOVERNANCE_DB_DEV.INTEGRATION._2N_SOR_AND_STOCK_GIT_INTERNAL_REPO/branches/${{ github.ref_name }}/snowflake/databases/governance_db/deploy_objects.sql USING (git_branch=>'${{ github.ref_name }}' ,environment=>'DEV', create_telemetry_db => true ,project=>'_2N_SOR_AND_STOCK_')"
