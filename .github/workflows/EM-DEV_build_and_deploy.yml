@@ -67,5 +67,10 @@ jobs:
         run: |
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY _2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV FETCH"
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @_2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV/branches/${{ github.ref_name }}/templates/schema__create.sql USING (database_name=>'GOVERNANCE_DB_DEV', schema_name=>'INTEGRATION')"
+          
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @_2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV/branches/${{ github.ref_name }}/templates/database__create.sql USING (database_name=>'SOR_AND_STOCK_DEV')"
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @_2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV/branches/${{ github.ref_name }}/templates/schema__create.sql USING (database_name=>'SOR_AND_STOCK_DEV', schema_name=>'DATA')"
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @_2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV/branches/${{ github.ref_name }}/templates/schema__create.sql USING (database_name=>'SOR_AND_STOCK_DEV', schema_name=>'PROCESS')"
+
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @_2N_SOR_AND_STOCK_DEPLOYMENT_REPOSITORY_DEV/branches/${{ github.ref_name }}/snowflake/databases/governance_db/schemas/integration/stages/git_internal_repo.sql USING (git_branch=>'${{ github.ref_name }}' ,environment=>'DEV',project=>'_2N_SOR_AND_STOCK_')"
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @GOVERNANCE_DB_DEV.INTEGRATION._2N_SOR_AND_STOCK_GIT_INTERNAL_REPO/branches/${{ github.ref_name }}/snowflake/databases/governance_db/deploy_objects.sql USING (git_branch=>'${{ github.ref_name }}' ,environment=>'DEV', create_telemetry_db => true ,project=>'_2N_SOR_AND_STOCK_')"
