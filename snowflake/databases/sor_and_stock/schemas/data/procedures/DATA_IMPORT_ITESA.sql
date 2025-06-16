@@ -46,7 +46,7 @@ BEGIN
             CODE_ITESA                                          AS ITEM_REFERENCE_NUMBER,
             "DÉSIGNATION"                                       AS PRODUCT_NAME,
             TRY_TO_DECIMAL("QUANTITÉ")                          AS QUANTITY,
-            F_COUNTRY_CODE(PAYS)                                AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE(PAYS)                        AS COUNTRY_OF_DESTINATION
         FROM                    
             IDENTIFIER(:SOURCE_TABLE)
         WHERE 

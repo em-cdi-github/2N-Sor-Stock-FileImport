@@ -59,7 +59,7 @@ BEGIN
                 "2N_ITEM_REFERENCE_NUMBER_(SKU)"    AS ITEM_REFERENCE_NUMBER,
                 "2N_PRODUCT_NAME"                   AS PRODUCT_NAME,
                 QUANTITY                            AS QUANTITY,
-                COUNTRY_OF_DESTINATION              AS COUNTRY_OF_DESTINATION
+                PROCESS.F_COUNTRY_CODE(COUNTRY_OF_DESTINATION) AS COUNTRY_OF_DESTINATION
             FROM 
                 IDENTIFIER(:SOURCE_TABLE))
         SELECT 

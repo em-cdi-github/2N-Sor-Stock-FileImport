@@ -46,7 +46,7 @@ BEGIN
             PRODUCT_CODE                                        AS ITEM_REFERENCE_NUMBER,
             PRODUCT_DESC                                        AS PRODUCT_NAME,
             TRY_TO_DECIMAL(QUANTITY)                            AS QUANTITY,
-            F_COUNTRY_CODE(COUNTRY)                             AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE(COUNTRY)                     AS COUNTRY_OF_DESTINATION
         FROM                    
             IDENTIFIER(:SOURCE_TABLE)
         WHERE 

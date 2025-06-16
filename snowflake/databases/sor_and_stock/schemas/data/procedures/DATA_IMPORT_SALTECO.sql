@@ -46,7 +46,7 @@ BEGIN
             BESTELLNUMMER                           AS ITEM_REFERENCE_NUMBER,
             ARTIKELBEZEICHNUNG                      AS PRODUCT_NAME,
             TRY_TO_DECIMAL(SPLIT_PART(MENGE, $$.$$, 1)) AS QUANTITY,
-            F_COUNTRY_CODE(LAND)                    AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE(LAND)            AS COUNTRY_OF_DESTINATION
         FROM 
             IDENTIFIER(:SOURCE_TABLE)
         WHERE 

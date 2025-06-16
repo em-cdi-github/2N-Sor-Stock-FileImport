@@ -46,7 +46,7 @@ BEGIN
             REFERENCE_FABRICANT                             AS ITEM_REFERENCE_NUMBER,
             DESIGNATION_ARTICLE                             AS PRODUCT_NAME,
             QTE_VENDUE                                      AS QUANTITY,
-            F_COUNTRY_CODE(PAYS_LIVRAISON)                  AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE(PAYS_LIVRAISON)          AS COUNTRY_OF_DESTINATION
         FROM 
             IDENTIFIER(:SOURCE_TABLE)
         WHERE 

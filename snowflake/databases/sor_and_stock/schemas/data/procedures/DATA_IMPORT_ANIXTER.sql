@@ -46,7 +46,7 @@ BEGIN
             "MFR_ITEM_#"                                        AS ITEM_REFERENCE_NUMBER,
             "DESCRIPTION"                                       AS PRODUCT_NAME,
             TRY_TO_DECIMAL(MTD_QTY)                             AS QUANTITY,
-            F_COUNTRY_CODE("SHIP-TO_COUNTRY")                   AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE("SHIP-TO_COUNTRY")           AS COUNTRY_OF_DESTINATION
         FROM                    
             IDENTIFIER(:SOURCE_TABLE)
         WHERE 

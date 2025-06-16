@@ -46,7 +46,7 @@ BEGIN
             MPN                                 AS ITEM_REFERENCE_NUMBER,
             WEB_NAME                            AS PRODUCT_NAME,
             QUANTITY                            AS QUANTITY,
-            F_COUNTRY_CODE("NAME.1")            AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE("NAME.1")    AS COUNTRY_OF_DESTINATION
         FROM 
             IDENTIFIER(:SOURCE_TABLE)
         WHERE

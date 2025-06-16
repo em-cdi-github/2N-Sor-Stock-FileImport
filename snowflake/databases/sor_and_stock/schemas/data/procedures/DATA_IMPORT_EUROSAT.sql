@@ -46,7 +46,7 @@ BEGIN
             "2N_OBJEDNACÍ_ČÍSLO"                    AS ITEM_REFERENCE_NUMBER,
             "2N_NÁZEV_PRODUKTU"                     AS PRODUCT_NAME,
             "POČET_KS"                              AS QUANTITY,
-            F_COUNTRY_CODE("ZEMĚ_URČENÍ")           AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE("ZEMĚ_URČENÍ")   AS COUNTRY_OF_DESTINATION
         FROM 
             IDENTIFIER(:SOURCE_TABLE)
         WHERE 

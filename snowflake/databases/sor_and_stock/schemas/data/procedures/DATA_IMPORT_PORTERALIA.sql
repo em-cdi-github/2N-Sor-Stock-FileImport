@@ -46,7 +46,7 @@ BEGIN
             REFERENCIA                                          AS ITEM_REFERENCE_NUMBER,
             "REFERENCIA"                                        AS PRODUCT_NAME,
             TRY_TO_DECIMAL(CANTIDAD)                            AS QUANTITY,
-            F_COUNTRY_CODE(PAIS)                                AS COUNTRY_OF_DESTINATION
+            PROCESS.F_COUNTRY_CODE(PAIS)                        AS COUNTRY_OF_DESTINATION
         FROM                    
             IDENTIFIER(:SOURCE_TABLE)
         WHERE 
