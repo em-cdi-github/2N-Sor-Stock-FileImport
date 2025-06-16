@@ -24,7 +24,7 @@ SELECT TOP 1
         WHEN 'UK'     THEN 'United Kingdom'
         WHEN 'UNITED ARAB EMIRATE' THEN 'United Arab Emirates'
         WHEN 'RSA'    THEN 'South Africa'
-        WHEN IS NULL    THEN NULL
+        WHEN  NULL    THEN NULL
         WHEN 'BEDFORDSHIRE'        THEN 'United Kingdom'
         WHEN 'BERKSHIRE'           THEN 'United Kingdom'
         WHEN 'BUCKINGHAMSHIRE'     THEN 'United Kingdom'
