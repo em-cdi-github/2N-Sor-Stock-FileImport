@@ -7,7 +7,7 @@ USE ROLE sysadmin;
     {% set sufix = '_'+ environment %}
 {% endif %} 
 
-create or replace TABLE SOR_AND_STOCK{{ sufix }}.PROCESS.SOR_ALL_DATA (
+create or ALTER TABLE SOR_AND_STOCK{{ sufix }}.PROCESS.SOR_ALL_DATA (
 	YEAR_MONTH VARCHAR(16777216),
 	PROFILE VARCHAR(16777216),
 	DATE_OF_SALES DATE,
