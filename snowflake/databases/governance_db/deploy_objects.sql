@@ -28,9 +28,10 @@ EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/process/procedures/SOR_STOCK_PR
 -- stages     
 EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/process/stages/files_stage.sql                          using(environment=>'{{ environment }}');
 --__________________________________________________________________________________________________________________________________________
---integration DB -- table data
---EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/****.sql                USING (environment=>'{{ environment }}');
 
+--integration DB -- table data
+EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/data/tables/SOR_ALL_DATA.sql                    USING (environment=>'{{ environment }}');
+EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/data/tables/STOCK_ALL_DATA.sql                    USING (environment=>'{{ environment }}');
 
 --**************************************************************DATA DB**************************************************************************************
 -- procedures
