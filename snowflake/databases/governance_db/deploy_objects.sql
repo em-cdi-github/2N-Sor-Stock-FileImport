@@ -30,8 +30,8 @@ EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/process/stages/files_stage.sql 
 --__________________________________________________________________________________________________________________________________________
 
 --integration DB -- table data
-EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/data/process/tables/SOR_ALL_DATA.sql                    USING (environment=>'{{ environment }}');
-EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/data/process/tables/STOCK_ALL_DATA.sql                    USING (environment=>'{{ environment }}');
+EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/process/tables/SOR_ALL_DATA.sql                    USING (environment=>'{{ environment }}');
+EXECUTE IMMEDIATE FROM @{{ path_governance_db }}/process/tables/STOCK_ALL_DATA.sql                    USING (environment=>'{{ environment }}');
 
 --**************************************************************DATA DB**************************************************************************************
 -- procedures
