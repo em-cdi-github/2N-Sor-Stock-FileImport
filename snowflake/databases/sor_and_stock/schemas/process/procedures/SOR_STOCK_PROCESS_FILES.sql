@@ -260,7 +260,7 @@ def stock(session,fileDictData,f,sheet):
 def create_scope_url(session,db_schema,path):
     stage_name = "@"+db_schema + "." + path.split("/")[0]
     filepath_without_stage = path.replace(path.split("/")[0]+"/","")
-    scoped_url_str = f"SELECT SOR_AND_STOCK{{ sufix }}.PROCESS.BUILD_SCOPED_FILE_URL($${stage_name}$$,$${filepath_without_stage}$$)"
+    scoped_url_str = f"SELECT BUILD_SCOPED_FILE_URL($${stage_name}$$,$${filepath_without_stage}$$)"
     df = session.sql(scoped_url_str).collect()
     scoped_url = df[0][0]
     return scoped_url
