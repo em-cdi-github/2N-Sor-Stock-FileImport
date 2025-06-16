@@ -260,7 +260,7 @@ def stock(session,fileDictData,f,sheet):
 def create_scope_url(session,db_schema,path):
     stage_name = "@"+db_schema + "." + path.split("/")[0]
     filepath_without_stage = path.replace(path.split("/")[0]+"/","")
-    scoped_url_str = f"SELECT BUILD_SCOPED_FILE_URL($${stage_name}$$,$${filepath_without_stage}$$)"
+    scoped_url_str = f"SELECT SOR_AND_STOCK{{ sufix }}.PROCESS.BUILD_SCOPED_FILE_URL($${stage_name}$$,$${filepath_without_stage}$$)"
     df = session.sql(scoped_url_str).collect()
     scoped_url = df[0][0]
     return scoped_url
@@ -268,7 +268,7 @@ def create_scope_url(session,db_schema,path):
 #______________________________________________________________________________________________________________
 def check_profile(session,filename, filetype):
     profile_prop = []
-    f_distributor_settings = f"SELECT * FROM TABLE (MP_TEST.NN_SOR_STOCK_PARSING.F_DISTRIBUTOR_SETTINGS(''{filename}'',''{filetype}''))"
+    f_distributor_settings = f"SELECT * FROM TABLE (SOR_AND_STOCK{{ sufix }}.PROCESS.F_DISTRIBUTOR_SETTINGS(''{filename}'',''{filetype}''))"
     df = session.sql(f_distributor_settings).collect()
     if len(df) > 0 :
         profile_prop = {    
@@ -305,7 +305,7 @@ def check_profile(session,filename, filetype):
 # return list of files in the stage/folder
 def fileDictList(session):
     try:
-        sql_string = """LIST @MP_TEST.NN_SOR_STOCK_PARSING.files/IN/"""
+        sql_string = """LIST @SOR_AND_STOCK{{ sufix }}.PROCESS.files/IN/"""
         df = session.sql(sql_string).collect()
         sql_string = """SELECT * FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()))"""
         df = session.sql(sql_string)
@@ -348,21 +348,21 @@ def statusTableInfo(session, fileDictData, type, status, status_text):
             #---------------------------------------------
             # initial insert into log table
             sql_string = """
-                    INSERT INTO SOR_STOCK_PROCESS_STATUS (FILENAME,STATUS,STATUS_TEXT) 
+                    INSERT INTO SOR_AND_STOCK{{ sufix }}.PROCESS.SOR_STOCK_PROCESS_STATUS (FILENAME,STATUS,STATUS_TEXT) 
                         values ($${0}$$,$${1}$$,$${2}$$);
                     """.format(fileDictData["filename"], status, status_text)
             df = session.sql(sql_string).collect()
             #---------------------------------------------
             # select inserted row id - AT(STATEMENT=>LAST_QUERY_ID()) - is pointing to the moment of the last query id, despite new rows were inserted.
             sql_string = """
-                    SELECT MAX(ID) AS ID FROM SOR_STOCK_PROCESS_STATUS AT(STATEMENT=>LAST_QUERY_ID());
+                    SELECT MAX(ID) AS ID FROM SOR_AND_STOCK{{ sufix }}.PROCESS.SOR_STOCK_PROCESS_STATUS AT(STATEMENT=>LAST_QUERY_ID());
                     """
             df = session.sql(sql_string).collect()
             fileDictData["process_id"] = df[0].ID
                 
         else:
             sql_string = """
-                    UPDATE SOR_STOCK_PROCESS_STATUS 
+                    UPDATE SOR_AND_STOCK{{ sufix }}.PROCESS.SOR_STOCK_PROCESS_STATUS 
                         SET 
                             STATUS = $${0}$$, 
                             STATUS_TEXT = $${1}$$, 
