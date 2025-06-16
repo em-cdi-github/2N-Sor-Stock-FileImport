@@ -58,7 +58,7 @@ AS '
                 ELSE ''ERROR: PARSING PATTERN NOT FOUND!''
             END     AS CSV_DELIMITER
         FROM 
-            MP_TEST.NN_SOR_STOCK_PARSING.DISTRIBUTOR_SETTINGS D JOIN 
+            SOR_AND_STOCK{{ sufix }}.PROCESS.DISTRIBUTOR_SETTINGS D JOIN 
             MATCH M             ON D.ID = M.ID
         WHERE
             D.TYPE = UPPER(file_type)

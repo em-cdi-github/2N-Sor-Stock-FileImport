@@ -184,7 +184,7 @@ def sor(session,fileDictData,f,sheet):
                 sor_df["CTRY"].values[index] =      sor_df["CTRY"].values[index-1]
     #---------------------------------------------
     sor_sdf = session.create_dataframe(sor_df)
-    sor_sdf.write.mode("overwrite").save_as_table(fileDictData["profile_prop_sor"]["distributor_name"] + "_SOR")
+    sor_sdf.write.mode("overwrite").save_as_table("SOR_AND_STOCK{{ sufix }}.DATA." + fileDictData["profile_prop_sor"]["distributor_name"] + "_SOR")
     
     sql_string = fileDictData["profile_prop_sor"]["other_settings"]["final_insert"]
     df = session.sql(sql_string).collect()
@@ -212,7 +212,7 @@ def sor_eurosat(session,fileDictData,f,sheets):
 
     #---------------------------------------------
     sor_sdf = session.create_dataframe(sor_df)
-    sor_sdf.write.mode("overwrite").save_as_table(fileDictData["profile_prop_sor"]["distributor_name"] + "_SOR")
+    sor_sdf.write.mode("overwrite").save_as_table("SOR_AND_STOCK{{ sufix }}.DATA." + fileDictData["profile_prop_sor"]["distributor_name"] + "_SOR")
     
     sql_string = fileDictData["profile_prop_sor"]["other_settings"]["final_insert"]
     df = session.sql(sql_string).collect()
@@ -250,7 +250,7 @@ def stock(session,fileDictData,f,sheet):
     stock_df.insert(0,"INSERT_DATE",datetime.today() ,True)
     #---------------------------------------------
     stock_sdf = session.create_dataframe(stock_df)
-    stock_sdf.write.mode("overwrite").save_as_table(fileDictData["profile_prop_stock"]["distributor_name"] + "_STOCK")
+    stock_sdf.write.mode("overwrite").save_as_table("SOR_AND_STOCK{{ sufix }}.DATA." + fileDictData["profile_prop_stock"]["distributor_name"] + "_STOCK")
     
     sql_string = fileDictData["profile_prop_stock"]["other_settings"]["final_insert"]
     df = session.sql(sql_string).collect()
