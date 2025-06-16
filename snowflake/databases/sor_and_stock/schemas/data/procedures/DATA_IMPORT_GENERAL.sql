@@ -93,7 +93,7 @@ BEGIN
             ITEM_REFERENCE_NUMBER               AS ITEM_REFERENCE_NUMBER,
             PRODUCT_NAME                        AS PRODUCT_NAME,
             QUANTITY                            AS QUANTITY,
-            F_COUNTRY_CODE(COUNTRY_OF_DESTINATION) AS COUNTRY_OF_DESTINATION
+            COUNTRY_OF_DESTINATION              AS COUNTRY_OF_DESTINATION
         FROM
             SOR_DATA
         WHERE
